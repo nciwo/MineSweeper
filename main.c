@@ -22,6 +22,12 @@ typedef struct _Level
 	char* const level;
 } Level;
 
+typedef struct _COORD
+{
+	int x;
+	int y;
+} COORD;
+
 /**** Global Level Variables ****/
 const Level EASY = {9, 9, 10, "EASY"};
 const Level INTERMEDIATE = {16, 16, 40, "INTERMEDIATE"};
@@ -163,10 +169,10 @@ void printBoard(Level level)
 	}
 }
 
-bool isValidInput(Level level, const char *input)
+bool isValidInput(Level level, const char *input, COORD *c)
 {
 	char key[4];
-	int i, checker;
+	int i;
 	if(input[1] == ' ')
 	{
 		key[0] = input[0];
@@ -179,44 +185,55 @@ bool isValidInput(Level level, const char *input)
 	if(key[0] < 'A' && key[0] < 'a') return false;
 	if(((key[1] >= '1') && (key[1] <= '9')) && ((key[2] >= '0') && (key[2] <= '9')))
 	{
-		checker = (key[1] - '0') * 10 + (key[2] - '0');
+		c->x = (key[1] - '0') * 10 + (key[2] - '0');
 		if(key[3] != '\0') return false;
 	}
-	else checker = -1;
+	else c->x = -1;
 
 	if(level.level == EASY.level)
 	{
-		if(key[0] > 'I' && key[0] > 'i') return false;
+		if((key[0] >= 'a') && (key[0] <= 'i')) c->y = key[0] - 'a' + 1;
+		else if((key[0] >= 'A') && (key[0] <= 'I')) c->y = key[0] - 'A' + 1;
+		else return false;
+
 		if(key[2] != '\0') return false;
-		if((key[1] >= '1') && (key[1] <= '9')) return true;
+
+		c->x = key[1] - '0';
+		if((c->x >= 1) && (c->x <= 9)) return true;
 		else return false;
 	}
 	else if(level.level == INTERMEDIATE.level)
 	{
-		if(key[0] > 'P' && key[0] > 'p') return false;
-		if(checker == -1)
+		if((key[0] >= 'a') && (key[0] <= 'p')) c->y = key[0] - 'a' + 1;
+		else if((key[0] >= 'A') && (key[0] <= 'P')) c->y = key[0] - 'A' + 1;
+		else return false;
+
+		if(c->x == -1)
 		{
 			if(key[2] != '\0') return false;
 			if((key[1] >= '1') && (key[1] <= '9')) return false;
 		}
 		else
 		{
-			if((checker >= 1) && (checker <= 16)) return true;
+			if((c->x >= 1) && (c->x <= 16)) return true;
 			else return false;
 		}
 
 	}
 	else if(level.level == EXPERT.level)
 	{
-		if(key[0] > 'P' && key[0] > 'p') return false;
-		if(checker == -1)
+		if((key[0] >= 'a') && (key[0] <= 'p')) c->y = key[0] - 'a' + 1;
+		else if((key[0] >= 'A') && (key[0] <= 'P')) c->y = key[0] - 'A' + 1;
+		else return false;
+
+		if(c->x == -1)
 		{
 			if(key[2] != '\0') return false;
 			if((key[1] >= '1') && (key[1] <= '9')) return false;
 		}
 		else
 		{
-			if((checker >= 1) && (checker <= 40)) return true;
+			if((c->x >= 1) && (c->x <= 40)) return true;
 			else return false;
 		}
 	}
@@ -241,18 +258,21 @@ void scanf_s(char *input, int size)
 
 void getInput(Level level)
 {
+	COORD pos;
+	COORD *pPos = &pos;
 	char input[5];
 	printf("\n>>> ");
 	scanf_s(input, 5);
 	
 	// printf("input : %s\n", input);
-	while(!(isValidInput(level, input)))
+	while(!(isValidInput(level, input, pPos)))
 	{
 		printf("Invalid input! Try again.\n>>> ");
 		scanf_s(input, 5);
 		printf("input : %s\n", input);
 	}
 	// printf("Your Input is %s\n", input);
+	printf("x : %d, y : %d\n", pPos->x, pPos->y);
 }
 
 int main()
