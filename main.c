@@ -222,18 +222,37 @@ bool isValidInput(Level level, const char *input)
 	}
 }
 
+/**** In gcc, there's no scanf_s(). So it's required. ****/
+void scanf_s(char *input, int size)
+{
+	if(size <= 0) return;
+	int i;
+	for(i = 0; i < size; ++i)
+	{
+		input[i] = getchar();
+		if(input[i] == '\n')
+		{
+			input[i] = '\0';
+			break;
+		}
+	}
+	if(input[size - 1] != '\0') while(getchar() != '\n');
+}
+
 void getInput(Level level)
 {
 	char input[5];
 	printf("\n>>> ");
-	scanf("%s", input);
+	scanf_s(input, 5);
 	
+	// printf("input : %s\n", input);
 	while(!(isValidInput(level, input)))
 	{
 		printf("Invalid input! Try again.\n>>> ");
-		scanf("%s", input);
+		scanf_s(input, 5);
+		printf("input : %s\n", input);
 	}
-	printf("Your Input is %s\n", input);
+	// printf("Your Input is %s\n", input);
 }
 
 int main()
