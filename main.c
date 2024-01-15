@@ -278,7 +278,7 @@ void getInput(Level level)
 
 int main()
 {
-	Level level = EXPERT;
+	Level level = EASY;
 
 	initBoard(level);
 	writeNumber(level);
