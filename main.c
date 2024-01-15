@@ -211,7 +211,8 @@ bool isValidInput(Level level, const char *input, COORD *c)
 		if(c->x == -1)
 		{
 			if(key[2] != '\0') return false;
-			if((key[1] >= '1') && (key[1] <= '9')) return false;
+			if((key[1] >= '1') && (key[1] <= '9')) { c->x = key[1] - '0'; return true; }
+			else return false;
 		}
 		else
 		{
@@ -229,7 +230,7 @@ bool isValidInput(Level level, const char *input, COORD *c)
 		if(c->x == -1)
 		{
 			if(key[2] != '\0') return false;
-			if((key[1] >= '1') && (key[1] <= '9')) return false;
+			if((key[1] >= '1') && (key[1] <= '9')) { c->x = key[1] - '0'; return true; }
 		}
 		else
 		{
@@ -277,7 +278,7 @@ void getInput(Level level)
 
 int main()
 {
-	Level level = EASY;
+	Level level = EXPERT;
 
 	initBoard(level);
 	writeNumber(level);
