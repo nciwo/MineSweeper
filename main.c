@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <stdbool.h>
+#include <string.h>
 
 typedef enum _Board
 {
@@ -165,61 +166,53 @@ void printBoard(Level level)
 
 bool isValidInput(Level level, const char *input)
 {
-	char key[4];
-	int i, checker;
-	if(input[1] == ' ')
+	/**** Inspect first index(rows) ****/
+	if(!(strcmp(level.level, EASY.level)))
 	{
-		key[0] = input[0];
-		key[1] = input[2];
-		key[2] = input[3];
-		key[3] = input[4];
-	}
-	else for(i = 0; i < 4; ++i) key[i] = input[i];
-
-	if(key[0] < 'A' && key[0] < 'a') return false;
-	if(((key[1] >= '1') && (key[1] <= '9')) && ((key[2] >= '0') && (key[2] <= '9')))
-	{
-		checker = (key[1] - '0') * 10 + (key[2] - '0');
-		if(key[3] != '\0') return false;
-	}
-	else checker = -1;
-
-	if(level.level == EASY.level)
-	{
-		if(key[0] > 'I' && key[0] > 'i') return false;
-		if(key[2] != '\0') return false;
-		if((key[1] >= '1') && (key[1] <= '9')) return true;
+		if((input[0] >= 'A') && (input[0] <= 'I')) ;
+		else if((input[0] >= 'a') && (input[0] <= 'i')) ;
 		else return false;
 	}
-	else if(level.level == INTERMEDIATE.level)
+	else
 	{
-		if(key[0] > 'P' && key[0] > 'p') return false;
-		if(checker == -1)
-		{
-			if(key[2] != '\0') return false;
-			if((key[1] >= '1') && (key[1] <= '9')) return false;
-		}
-		else
-		{
-			if((checker >= 1) && (checker <= 16)) return true;
-			else return false;
-		}
+		if((input[0] >= 'A') && (input[0] <= 'P')) ;
+		else if((input[0] >= 'a') && (input[0] <= 'p')) ;
+		else return false;
+	}
+	
+	int index;
+	int col_cnt, i, j;
+	if(input[1] == ' ') index = 2;
+	else index = 1;
 
-	}
-	else if(level.level == EXPERT.level)
+	if((input[index] >= '1') && (input[index] <= '9')) col_cnt = input[index] - '0';
+	else return false;
+
+	if((input[index + 1] >= '0') && (input[index + 1] <= '9'))
 	{
-		if(key[0] > 'P' && key[0] > 'p') return false;
-		if(checker == -1)
-		{
-			if(key[2] != '\0') return false;
-			if((key[1] >= '1') && (key[1] <= '9')) return false;
-		}
-		else
-		{
-			if((checker >= 1) && (checker <= 40)) return true;
-			else return false;
-		}
+		col_cnt *= 10;
+		col_cnt += input[index + 1] - '0';
 	}
+	printf("col_cnt = %d\n", col_cnt);
+
+	if(!(strcmp(level.level, EASY.level)))
+	{
+		if((col_cnt >= 1) && (col_cnt <= 9)) return true;
+		else return false;
+	}
+	else if(!(strcmp(level.level, INTERMEDIATE.level)))
+	{
+		if((col_cnt >= 1) && (col_cnt <= 16)) return true;
+		else return false;
+	}
+	else if(!(strcmp(level.level, EXPERT.level)))
+	{
+		if((col_cnt >= 1) && (col_cnt <= 40)) return true;
+		else return false;
+	}
+
+	printf("Error occured in comparing level.\n");
+	exit(-1);
 }
 
 void getInput(Level level)
@@ -227,8 +220,9 @@ void getInput(Level level)
 	char input[5];
 	printf("\n>>> ");
 	scanf("%s", input);
+	printf("Input : %s\n", input);
 	
-	while(isValidInput(level, input))
+	while(!(isValidInput(level, input)))
 	{
 		printf("Invalid input! Try again.\n>>> ");
 		scanf("%s", input);
