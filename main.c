@@ -228,7 +228,7 @@ void getInput(Level level)
 	printf("\n>>> ");
 	scanf("%s", input);
 	
-	while(isValidInput(level, input))
+	while(!(isValidInput(level, input)))
 	{
 		printf("Invalid input! Try again.\n>>> ");
 		scanf("%s", input);
