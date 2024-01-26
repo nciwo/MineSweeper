@@ -3,6 +3,7 @@
 #include <time.h>
 #include <stdbool.h>
 
+
 typedef enum _Board
 {
 	WALL = -2,
@@ -32,6 +33,10 @@ typedef struct _COORD
 const Level EASY = {9, 9, 10, "EASY"};
 const Level INTERMEDIATE = {16, 16, 40, "INTERMEDIATE"};
 const Level EXPERT = {30, 16, 99, "EXPERT"};
+
+void boardReveal(Level level, COORD pos);
+
+
 
 void plantMine(Level level)
 {
@@ -273,7 +278,73 @@ void getInput(Level level)
 		printf("input : %s\n", input);
 	}
 	// printf("Your Input is %s\n", input);
-	printf("x : %d, y : %d\n", pPos->x, pPos->y);
+	// printf("x : %d, y : %d\n", pPos->x, pPos->y);
+	boardReveal(level, pos);
+}
+
+void GameOver()
+{
+	printf("You clicked mine!\n");
+	exit(0);
+}
+
+void boardReveal(Level level, COORD pos)
+{
+	COORD temp;
+	int x = pos.x - 1, y = pos.y - 1;
+	
+	ppClicked[y][x] = true;
+
+	if(ppBoard[y][x] == MINE) GameOver();
+	else if(ppBoard[y][x] == AIR)
+	{
+		if(x > 0)
+		{
+			temp.x = x - 1;
+			temp.y = y;
+			boardReveal(level, temp);
+			
+			if(y > 0)
+			{
+				temp.y = y - 1;
+				boardReveal(level, temp);
+			}
+			if(y < (level.height - 1))
+			{
+				temp.y = y + 1;
+				boardReveal(level, temp);
+			}
+		}
+		if(x < (level.width - 1))
+		{
+			temp.x = x + 1;
+			temp.y = y;
+			boardReveal(level, temp);
+			
+			if(y > 0)
+			{
+				temp.y = y - 1;
+				boardReveal(level, temp);
+			}
+			if(y < (level.height - 1))
+			{
+				temp.y = y + 1;
+				boardReveal(level, temp);
+			}
+		}	
+		if(y > 0)
+		{
+			temp.x = x;
+			temp.y = y - 1;
+			boardReveal(level, temp);
+		}
+		if(y < (level.height - 1))
+		{
+			temp.x = x;
+			temp.y = y + 1;
+			boardReveal(level, temp);
+		}
+	}
 }
 
 int main()
@@ -286,6 +357,10 @@ int main()
 	printBoard(level);
 	getInput(level);
 
+	printBoard(level);
+
+	printf("\n=================================\n");
+	__SECRET__printBoard(level);
 
 	freeBoard(level);
 	return 0;

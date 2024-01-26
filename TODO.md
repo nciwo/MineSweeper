@@ -8,3 +8,7 @@
 ### 1/15
 # TODO:
 1. Make boardReveal() function.
+
+### 1/26 ~ 1/27
+# TODO:
+1. When click air, it provoke segmentation fault. Fix it.
